@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restee", "Restee\Restee.csproj", "{281C56BA-A3F7-4FC6-989D-1AE00EF6CB3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restee.What", "Restee.What\Restee.What.csproj", "{84C2A740-1B56-41DD-9DDE-80749C360D26}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{281C56BA-A3F7-4FC6-989D-1AE00EF6CB3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{281C56BA-A3F7-4FC6-989D-1AE00EF6CB3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{281C56BA-A3F7-4FC6-989D-1AE00EF6CB3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{281C56BA-A3F7-4FC6-989D-1AE00EF6CB3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84C2A740-1B56-41DD-9DDE-80749C360D26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84C2A740-1B56-41DD-9DDE-80749C360D26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84C2A740-1B56-41DD-9DDE-80749C360D26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84C2A740-1B56-41DD-9DDE-80749C360D26}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
