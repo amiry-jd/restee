@@ -8,6 +8,7 @@ namespace Restee.What.Specifications.Impls {
 
         private readonly IDeserializer _deserializer;
 
+        //test for github
         public GetParameterlessSimple(IDeserializer deserializer) {
             _deserializer = deserializer;
         }
