@@ -2,18 +2,12 @@ using System;
 
 namespace Restee.Attributes {
 
-    [AttributeUsage(AttributeTargets.Parameter,AllowMultiple = false , Inherited = false )]
-    public class QueryParamAttribute : Attribute {
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+    public class QueryParamAttribute : ParamAttribute {
 
-        public string Name { get; }
+        public QueryParamAttribute() : base(ParamType.Query) { }
 
-        public QueryParamAttribute() {
-
-        }
-
-        public QueryParamAttribute(string name) {
-            Name = name;
-        }
+        public QueryParamAttribute(string name) : base(name, ParamType.Query) { }
 
     }
 

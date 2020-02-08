@@ -3,17 +3,11 @@ using System;
 namespace Restee.Attributes {
 
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public class HeaderParamAttribute : Attribute {
+    public class HeaderParamAttribute : ParamAttribute {
 
-        public string Name { get; }
+        public HeaderParamAttribute() : base(ParamType.Header) { }
 
-        public HeaderParamAttribute() {
-
-        }
-
-        public HeaderParamAttribute(string name) {
-            Name = name;
-        }
+        public HeaderParamAttribute(string name) : base(name, ParamType.Header) { }
 
     }
 
