@@ -5,18 +5,18 @@ namespace Restee.Attributes {
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
     public abstract class ParamAttribute : Attribute {
 
-        protected ParamAttribute(ParamType paramType) {
-            ParamType = paramType;
+        protected ParamAttribute(ParameterKind parameterKind) {
+            ParameterKind = parameterKind;
         }
 
-        protected ParamAttribute(string name, ParamType paramType) {
+        protected ParamAttribute(string name, ParameterKind parameterKind) {
             Name      = name;
-            ParamType = paramType;
+            ParameterKind = parameterKind;
         }
 
         public string Name { get; }
 
-        public ParamType ParamType { get; }
+        public ParameterKind ParameterKind { get; }
 
     }
 

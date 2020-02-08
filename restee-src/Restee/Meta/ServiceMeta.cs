@@ -115,7 +115,7 @@ namespace Restee.Meta {
     internal class ParameterMeta {
 
         private readonly MethodMeta _methodMeta;
-        private readonly ParamType _paramType;
+        private readonly ParameterKind _parameterKind;
         private readonly string _name;
         private readonly string _metaName;
         private readonly Type _type;
@@ -124,7 +124,7 @@ namespace Restee.Meta {
             _methodMeta = methodMeta;
             var attributes = parameterInfo.GetCustomAttributes();
             var attr = attributes.SingleOrDefault(a => a is ParamAttribute) as ParamAttribute;
-            _paramType = attr?.ParamType ?? ParamType.Query;
+            _parameterKind = attr?.ParameterKind ?? ParameterKind.Query;
             _name = parameterInfo.Name;
             _metaName = attr?.Name;
             _type = parameterInfo.ParameterType;
