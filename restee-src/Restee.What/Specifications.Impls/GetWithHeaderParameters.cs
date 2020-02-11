@@ -36,7 +36,7 @@ namespace Restee.What.Specifications.Impls
         {
             var baseUrl = "http://api.domain.com";
             var path = $"api/v1/some";
-            var headerKey = name;
+            var headerKey = "name";
             var headerValue = name;
 
             var uri = new Uri(new Uri(baseUrl), path);

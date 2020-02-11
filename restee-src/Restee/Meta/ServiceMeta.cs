@@ -40,7 +40,7 @@ namespace Restee.Meta {
             return (attr?.HttpMethod, attr?.Path);
         }
 
-        public static IDictionary<string, string> GetHeaders(this  IEnumerable<Attribute> attributes) {
+        public static IReadOnlyDictionary<string, string> GetHeaders(this  IEnumerable<Attribute> attributes) {
             return attributes //.Where(a => a is HeaderAttribute)
                   .OfType<HeaderAttribute>()
                   .ToDictionary(a => a.Name, a => a.Value);
@@ -61,61 +61,58 @@ namespace Restee.Meta {
     /// </summary>
     public class ResourceMeta {
 
-        private readonly string                      _baseUrl;
-        private readonly Type                        _serializerType;
-        private readonly Type                        _deserializerType;
-        private readonly IDictionary<string, string> _headers;
+        public string BaseUrl { get; }
+        public Type SerializerType { get; }
+        public Type DeserializerType { get; }
+        public IReadOnlyDictionary<string, string> Headers { get; }
+        public IEnumerable<OperationMeta> OperationMetas { get; }
 
         public ResourceMeta(Type resourceType) {
             var attributes = resourceType.GetCustomAttributes().ToList();
-            _baseUrl = attributes.GetBaseUrl();
-            _serializerType = attributes.GetSerializer();
-            _deserializerType = attributes.GetDeserializer();
-            _headers = attributes.GetHeaders();
-            var methodMetas = GetMethodMetas(resourceType, attributes);
+            BaseUrl = attributes.GetBaseUrl();
+            SerializerType = attributes.GetSerializer();
+            DeserializerType = attributes.GetDeserializer();
+            Headers = attributes.GetHeaders();
+            OperationMetas = resourceType.GetMethods()
+                                         .Select(method => new OperationMeta(this, method))
+                                         .ToList();
         }
-
-        private object GetMethodMetas(Type resourceType, List<Attribute> attributes) {
-            var methods = resourceType.GetMethods();
-            var list = new List<OperationMeta>();
-            foreach (var method in methods) list.Add(new OperationMeta(this, resourceType, attributes, method));
-            return list;
-        }
-
     }
 
-    internal class OperationMeta {
+    public class OperationMeta {
 
-        private readonly ResourceMeta _resourceMeta;
-        private readonly HttpMethod _httpMethod;
-        private readonly string _path;
-        private readonly Type _serializerType;
-        private readonly Type _deserializerType;
-        private readonly IDictionary<string, string> _headers;
-        private readonly IEnumerable<FactorMeta> _factorMetas;
+        public ResourceMeta ResourceMeta { get; }
+        public HttpMethod HttpMethod { get; }
+        public string Path { get; }
+        public Type SerializerType { get; }
+        public Type DeserializerType { get; }
+        public IReadOnlyDictionary<string, string> Headers { get; }
+        public IEnumerable<FactorMeta> FactorMetas { get; }
+        public string Sig { get; }
 
-        public OperationMeta(ResourceMeta resourceMeta, Type resourceType, List<Attribute> resourceAttributes, MethodInfo method) {
-            _resourceMeta = resourceMeta;
+        public OperationMeta(ResourceMeta resourceMeta, MethodInfo method) {
+            ResourceMeta = resourceMeta;
             var attributes = method.GetCustomAttributes().ToList();
-            (_httpMethod, _path) = attributes.GetHttpMethod();
-            (_serializerType, _deserializerType) = attributes.GetSerializationMeta();
-            _headers = attributes.GetHeaders();
-            _factorMetas = GetFactorMetas(method );
+            (HttpMethod, Path) = attributes.GetHttpMethod();
+            (SerializerType, DeserializerType) = attributes.GetSerializationMeta();
+            Headers = attributes.GetHeaders();
+            FactorMetas = method.GetParameters().Select(param => new FactorMeta(this, param)).ToList();
+            Sig = method.Name + '_' +
+                   string.Join('_',
+                               FactorMetas.Select(f => f.ParameterType.FullName ?? f.ParameterType.Name));
         }
 
-        private IEnumerable<FactorMeta> GetFactorMetas(MethodInfo method)
-            => method.GetParameters().Select(param => new FactorMeta(this, param)).ToList();
 
     }
 
-    internal class FactorMeta {
+    public class FactorMeta {
 
         public OperationMeta OperationMeta { get; }
         public FactorKind Kind { get; }
         public Type ParameterType { get; }
         public string ParameterName { get; }
         public string FactorName { get; }
-        public string KeyAlias { get; set; }
+        public string KeyAlias { get; }
 
         public FactorMeta(OperationMeta operationMeta, ParameterInfo parameterInfo) {
             OperationMeta = operationMeta;
