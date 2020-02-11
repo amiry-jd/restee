@@ -11,7 +11,7 @@ namespace Restee.Meta {
     public static class MetaHelper {
 
         public static string? GetBaseUrl(this IEnumerable<Attribute> attributes) {
-            var attr = attributes.Single(a => a is RestEraAttribute) as RestEraAttribute;
+            var attr = attributes.Single(a => a is ResteeAttribute) as ResteeAttribute;
             return attr?.BaseUrl;
         }
 
@@ -77,14 +77,14 @@ namespace Restee.Meta {
 
         private object GetMethodMetas(Type resourceType, List<Attribute> attributes) {
             var methods = resourceType.GetMethods();
-            var list = new List<MethodMeta>();
-            foreach (var method in methods) list.Add(new MethodMeta(this, resourceType, attributes, method));
+            var list = new List<OperationMeta>();
+            foreach (var method in methods) list.Add(new OperationMeta(this, resourceType, attributes, method));
             return list;
         }
 
     }
 
-    internal class MethodMeta {
+    internal class OperationMeta {
 
         private readonly ResourceMeta _resourceMeta;
         private readonly HttpMethod _httpMethod;
@@ -92,43 +92,42 @@ namespace Restee.Meta {
         private readonly Type _serializerType;
         private readonly Type _deserializerType;
         private readonly IDictionary<string, string> _headers;
+        private readonly IEnumerable<FactorMeta> _factorMetas;
 
-        public MethodMeta(ResourceMeta resourceMeta, Type resourceType, List<Attribute> resourceAttributes, MethodInfo method) {
+        public OperationMeta(ResourceMeta resourceMeta, Type resourceType, List<Attribute> resourceAttributes, MethodInfo method) {
             _resourceMeta = resourceMeta;
             var attributes = method.GetCustomAttributes().ToList();
             (_httpMethod, _path) = attributes.GetHttpMethod();
             (_serializerType, _deserializerType) = attributes.GetSerializationMeta();
             _headers = attributes.GetHeaders();
-            var parameters = GetParameterMetas(method );
+            _factorMetas = GetFactorMetas(method );
         }
 
-        private object GetParameterMetas(MethodInfo method) {
-            var parameters = method.GetParameters();
-            var list=new List<ParameterMeta>();
-            foreach (var param in parameters) list.Add(new ParameterMeta(this, param));
-
-            return list;
-        }
+        private IEnumerable<FactorMeta> GetFactorMetas(MethodInfo method)
+            => method.GetParameters().Select(param => new FactorMeta(this, param)).ToList();
 
     }
 
-    internal class ParameterMeta {
+    internal class FactorMeta {
 
-        private readonly MethodMeta _methodMeta;
-        private readonly ParameterKind _parameterKind;
-        private readonly string _name;
-        private readonly string _metaName;
-        private readonly Type _type;
+        public OperationMeta OperationMeta { get; }
+        public FactorKind Kind { get; }
+        public Type ParameterType { get; }
+        public string ParameterName { get; }
+        public string FactorName { get; }
+        public string KeyAlias { get; set; }
 
-        public ParameterMeta(MethodMeta methodMeta, ParameterInfo parameterInfo) {
-            _methodMeta = methodMeta;
+        public FactorMeta(OperationMeta operationMeta, ParameterInfo parameterInfo) {
+            OperationMeta = operationMeta;
             var attributes = parameterInfo.GetCustomAttributes();
-            var attr = attributes.SingleOrDefault(a => a is ParamAttribute) as ParamAttribute;
-            _parameterKind = attr?.ParameterKind ?? ParameterKind.Query;
-            _name = parameterInfo.Name;
-            _metaName = attr?.Name;
-            _type = parameterInfo.ParameterType;
+            var attr = attributes.SingleOrDefault(a => a is FactorAttribute) as FactorAttribute;
+            Kind = attr?.FactorKind ?? FactorKind.Query;
+            ParameterType = parameterInfo.ParameterType;
+            ParameterName = parameterInfo.Name;
+            FactorName = attr?.Name;
+            KeyAlias = string.IsNullOrWhiteSpace(FactorName) ? ParameterName : FactorName;
         }
+
 
     }
 

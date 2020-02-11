@@ -8,14 +8,14 @@ namespace Restee.What.Specifications
         [Header("X-Name", "Hasan")]
         Task<ResponseModel> AnnotatedHeader();
 
-        Task<ResponseModel> SimpleHeader([HeaderParam]string name);
+        Task<ResponseModel> SimpleHeader([HeaderFactor]string name);
 
-        Task<ResponseModel> AnnotatedHeaderParam([HeaderParam("X-Name")]string name);
-
-        [Header("X-Name", "Hasan")]
-        Task<ResponseModel> AnnotatedAndHeaderParam([HeaderParam("X-Famil")] string famil);
+        Task<ResponseModel> AnnotatedHeaderParam([HeaderFactor("X-Name")]string name);
 
         [Header("X-Name", "Hasan")]
-        Task<ResponseModel> MultipleValueParam([HeaderParam("X-Name")]string name);
+        Task<ResponseModel> AnnotatedAndHeaderParam([HeaderFactor("X-Famil")] string famil);
+
+        [Header("X-Name", "Hasan")]
+        Task<ResponseModel> MultipleValueParam([HeaderFactor("X-Name")]string name);
     }
 }

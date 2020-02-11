@@ -3,15 +3,15 @@ using System;
 namespace Restee.Attributes {
 
     [AttributeUsage(AttributeTargets.Interface )]
-    public class RestEraAttribute : Attribute {
+    public class ResteeAttribute : Attribute {
 
         public string BaseUrl { get; }
 
-        public RestEraAttribute() {
+        public ResteeAttribute() {
 
         }
 
-        public RestEraAttribute(string baseUrl) {
+        public ResteeAttribute(string baseUrl) {
             BaseUrl = baseUrl;
         }
 

@@ -1,6 +1,6 @@
 namespace Restee.Attributes {
 
-    public enum ParameterKind : byte {
+    public enum FactorKind : byte {
         Header,
         Query,
         Body,
