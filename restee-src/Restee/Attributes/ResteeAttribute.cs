@@ -1,6 +1,6 @@
 using System;
 
-namespace Restee.Attributes {
+namespace Restee {
 
     [AttributeUsage(AttributeTargets.Interface )]
     public class ResteeAttribute : Attribute {

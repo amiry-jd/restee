@@ -1,9 +1,9 @@
 namespace Restee.Meta {
 
-    public interface IMetadataProvider<TRest> {
+    public interface IMetadataProvider<TResource>  {
 
 
-        object Get(string get);
+        ResourceMeta Get(string get);
 
     }
 

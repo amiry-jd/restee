@@ -2,27 +2,36 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using Restee.Meta;
+
 namespace Restee.What.Specifications.Impls {
 
     public class GetParameterlessSimple : IGetParameterlessSimple {
 
-        private readonly IDeserializer _deserializer;
+        private readonly IRequestHandler _requestHandler;
+        private readonly IRouteProvider _routeProvider;
+        private readonly IObjectFactory _objectFactory;
 
-        //test for github
-        public GetParameterlessSimple(IDeserializer deserializer) {
-            _deserializer = deserializer;
+        public GetParameterlessSimple(
+            IRequestHandler requestHandler,
+            IRouteProvider routeProvider,
+            IObjectFactory objectFactory) {
+            _requestHandler = requestHandler;
+            _routeProvider = routeProvider;
+            _objectFactory = objectFactory;
         }
 
 
-        public async Task<ResponseModel> Get() {
-            var httpMethod = HttpMethod.Get;
-            var url = "someUrl";
-            var uri = new Uri(url);
+        public Task<ResponseModel> Get() {
+            
+            OperationMeta meta = null; // this will get value through code-generation 
+            
+            var httpMethod = meta.HttpMethod;
+            var deserializer = _objectFactory.Get<IDeserializer>(meta.DeserializerType);
+            var uri = _routeProvider.GetUri(meta);
             var request = new HttpRequestMessage(httpMethod, uri);
-            var client = new HttpClient();
-            var response = await client.SendAsync(request);
-            var result = _deserializer.DeserializeAsync(response);
-            return result;
+            var result = _requestHandler.HandleAsync<ResponseModel>(request, deserializer);
+            return result; 
         }
 
     }

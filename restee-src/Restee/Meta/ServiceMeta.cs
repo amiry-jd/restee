@@ -59,7 +59,7 @@ namespace Restee.Meta {
     /// (Roy Fielding’s dissertation (https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm#sec_5_2_1_1))
     /// </para>
     /// </summary>
-    public class ResourceMeta {
+    public sealed class ResourceMeta {
 
         public string BaseUrl { get; }
         public Type SerializerType { get; }
